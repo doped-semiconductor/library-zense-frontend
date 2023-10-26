@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@500;600&display=swap');
+:root{
+    --gray:#777777;
+    --blue:#004488;
+    --black:#303030;
+}
+.login-screen{
+    background-color:var(--gray);
+}
+.login{
+    width: auto;
+    padding-bottom: 20vh;
+    padding-inline: 8vw;
+}
+.login_inputs{
+    width: 415px;
+    font-family: 'Open Sans', sans-serif;
+    color: var(--blue);
+}
+.btn{
+    background-color: var(--gray);
+}
+.blue-marker{
+    background-color: #004488;
+    height: 98px;
+}
+.helper-message{
+    font-family: 'Lexend Deca', sans-serif;
+    color: black;
+    height: auto;
+}
+@media(max-width:767px){
+    .login{
+        width: 100%;
+        height: auto;
+    }
+    .login_inputs{
+        width: 90vw;
+    }
+    .blue-marker{
+        height: 121.6px;
+    }
+    /* .login-screen{
+        background-color: white;
+    } */
+}
