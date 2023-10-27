@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* <Navbar> </Navbar> */}
+        <Navbar> </Navbar>
         {children}
         {/* <footer> </footer> */}
         <script src="https://kit.fontawesome.com/dbc8b356b9.js" crossOrigin="anonymous"></script>

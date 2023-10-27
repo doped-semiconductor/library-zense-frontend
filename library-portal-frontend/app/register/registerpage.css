@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --gray: #777777;
+  --blue: #004488;
+  --black: #303030;
+}
+.register-screen {
+  background-color: var(--gray);
+}
+
+.register {
+  width: auto;
+  padding-inline: 8vw;
+}
+
+.register_inputs {
+  width: 405px;
+  font-family: 'Open Sans', sans-serif;
+  color: var(--blue);
+}
+.btn {
+  background-color: var(--gray);
+}
+.hidden {
+  display: none !important;
+}
+
+.error {
+  margin: 0;
+  margin-top: -22px;
+}
+
+@media (max-width: 767px) {
+  .register {
+    width: 100%;
+    height: auto;
+  }
+  .register_inputs {
+    width: 90vw;
+  }
+  /* .register-screen{
+        background-color: white;
+    } */
+}
