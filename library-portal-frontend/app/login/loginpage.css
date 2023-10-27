@@ -6,11 +6,13 @@
 }
 .login-screen{
     background-color:var(--gray);
+    /* background: linear-gradient(0deg,var(--blue),#fff ); */
 }
 .login{
     width: auto;
     padding-bottom: 20vh;
     padding-inline: 8vw;
+    /* background: linear-gradient(0deg,var(--blue),#fff ); */
 }
 .login_inputs{
     width: 405px;
