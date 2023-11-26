@@ -2,6 +2,8 @@
 import Image from 'next/image'
 import './loginpage.css'
 import Link from 'next/link'
+import { ChangeEvent, useState } from 'react'
+import axios from 'axios'
 const page = () => {
   const handlePasswordShow = ()=>{
     let eyeicon = document.getElementById("eyeicon")
@@ -19,6 +21,33 @@ const page = () => {
     eyeicon?.classList.remove("hidden");
     password?.setAttribute("type","password");
   }
+  const [credentials, setCredentials] = useState({email:"",password:""})  
+
+  const handleChange = (event:ChangeEvent<HTMLInputElement>)=>{
+    if(!event.target) return;
+    setCredentials({...credentials, [(event.target as HTMLInputElement).id]:(event.target as HTMLInputElement).value})
+  }
+
+  const handleClick = async()=>{
+    console.log(credentials)
+    let url = "http://localhost:5000/api/v1/auth/login";
+    let config = {
+      method:'post',
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type':'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify(credentials),
+    }
+    let response = await fetch(url,config);
+    response = await response.json();
+    if(response.error) window.alert("Incorrect credentials");
+    if(response.message){
+      window.alert("Logged in succesfully");
+    }
+  }
+
   
   return (
     <div className={`login-screen w-screen min-h-screen flex justify-center items-center`}>
@@ -31,13 +60,13 @@ const page = () => {
           <Image src='/logo.png' alt='IIITB logo' width={300} height={282}/>
           <div className='login_inputs flex-col flex items-center '>
               <h1 className=' p-1 text-xl font-semibold w-full'>Username</h1>
-              <input type="text" className='w-full h-14 text-l text-black mb-7' />
+              <input type="text" id='email' onChange={handleChange} className='w-full h-14 text-l text-black mb-7' />
               <div className='flex w-full p-1'>
               <h1 className='text-xl font-semibold w-full'>Password</h1>
               <Link href='/login/forgot' className='w-3/4 text-right text-sm font-semibold'>Forgot Password?</Link>
               </div>
               <div className='password-box login_inputs flex items-center relative'>
-              <input type="password" className=' w-full h-14 text-l  text-black mb-6' id="password" />
+              <input type="password" id = "password" onChange={handleChange} className=' w-full h-14 text-l  text-black mb-6' />
               <i className="fa-regular fa-eye absolute right-2 text-2xl h-3/5 text-justify cursor-pointer" onClick={handlePasswordShow} id="eyeicon"></i>
               <i className="fa-regular fa-eye-slash absolute right-2 text-2xl h-3/5 text-justify cursor-pointer hidden" onClick={handlePasswordHide} id="eye-closed"></i>
               </div>
@@ -46,7 +75,7 @@ const page = () => {
                   <input type="checkbox" className='w-5 h-5' />
                   <h1 className='text-black font-medium pl-2'>REMEMBER ME</h1>
                 </div>                 
-                <button className='btn w-28 h-11 rounded-xl font-bold text-white' >LOGIN</button> 
+                <button className='btn w-28 h-11 rounded-xl font-bold text-white' onClick={handleClick} >LOGIN</button> 
               </div>
           </div>
       </div>
