@@ -1,44 +1,70 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-:root {
-  --gray: #777777;
-  --blue: #004488;
-  --black: #303030;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+:root{
+    --gray:#777777;
+    --blue:#025484;
+    --black:#303030;
 }
-.register-screen {
-  background-color: var(--gray);
+.signup-screen{
+    background-color:white;
 }
-
-.register {
-  width: auto;
-  padding-inline: 8vw;
+.signup{
+    width: auto;
+    padding-top: 5vh;
+    padding-bottom: 15vh;
+    padding-inline: 8vw;
+    background-color: #f5f5f5;
+    backdrop-filter: blur( 15px );
+    transform: scale(0.9);
 }
-
-.register_inputs {
-  width: 405px;
-  font-family: 'Open Sans', sans-serif;
-  color: var(--blue);
+.signup_inputs{
+    width: 405px;
+    font-family: 'Poppins', sans-serif;
 }
-.btn {
-  background-color: var(--gray);
+input{
+    background-color: #f5f5f5;
+    border: solid black;
+    border-width: 0 0 2px 0;
 }
-.hidden {
-  display: none !important;
+input:focus{
+    outline: none;
 }
-
-.error {
-  margin: 0;
-  margin-top: -22px;
+.btn{
+    background-color: var(--blue);
 }
-
-@media (max-width: 767px) {
-  .register {
-    width: 100%;
-    height: auto;
-  }
-  .register_inputs {
-    width: 90vw;
-  }
-  /* .register-screen{
-        background-color: white;
-    } */
+.signup-btn{
+    background-color: var(--black);
+}
+.iiitb-logo{
+    transform: scale(0.9)  
+}
+.errormsg{
+    border: 1px solid red;
+    color: red;
+}
+.joinustext{
+    min-width: 40vw;
+    padding-right: 10vw;
+    margin-top: -50px;
+    letter-spacing: 0.4 rem;
+}
+.hidden{
+    display: none !important;
+}
+@media(max-width: 1290px){
+    .joinustext{
+        min-width: 30vw;
+        padding-right: 5vw;
+    }
+}
+@media(max-width:820px){
+    .signup{
+        width: 100%;
+        height: auto;
+    }
+    .signup_inputs{
+        max-width: 90%;
+    }
+    .joinustext{
+        display: none;
+    }
 }

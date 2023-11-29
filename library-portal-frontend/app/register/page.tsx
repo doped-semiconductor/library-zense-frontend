@@ -1,216 +1,138 @@
-'use client'
+"use client"
 import Image from 'next/image'
 import './registerpage.css'
 import Link from 'next/link'
 import { ChangeEvent, useState } from 'react'
+import axios from 'axios'
 const page = () => {
-  const handlePasswordShow = (op: number) => {
-    if (op === 1) {
-      let eyeicon = document.getElementById('eyeicon1')
-      let eyeClosed = document.getElementById('eye-closed1')
-      let password = document.getElementById('password')
-      eyeClosed?.classList.remove('hidden')
-      eyeicon?.classList.add('hidden')
-      password?.setAttribute('type', 'text')
-    } else if (op === 2) {
-      let eyeicon = document.getElementById('eyeicon2')
-      let eyeClosed = document.getElementById('eye-closed2')
-      let password = document.getElementById('confirm-password')
-      eyeClosed?.classList.remove('hidden')
-      eyeicon?.classList.add('hidden')
-      password?.setAttribute('type', 'text')
+  
+  // password meets the minimum length requirement and contains 
+  // at least one upper case letter, one lower case letter,one number, and one special character.
+  let regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  
+  const handlePasswordShow = (elementId: string)=>{
+    let eyeicon = document.getElementById("eyeicon" + '-' + elementId)
+    let eyeClosed = document.getElementById("eye-closed" + '-' + elementId)
+    let password = document.getElementById(elementId)
+    eyeClosed?.classList.remove("hidden");
+    eyeicon?.classList.add("hidden");
+    password?.setAttribute("type","text");
+  }
+  
+  const handlePasswordHide = (elementId: string)=>{
+    let eyeicon = document.getElementById("eyeicon" + '-' + elementId)
+    let eyeClosed = document.getElementById("eye-closed" + '-' + elementId)
+    let password = document.getElementById(elementId)
+    eyeClosed?.classList.add("hidden");
+    eyeicon?.classList.remove("hidden");
+    password?.setAttribute("type","password");
+  }
+  
+  const [signUpCredentials, setSignUpCredentials] = useState({email:"",password:"",confirmpassword:""})  
+  const [passwordError, setPasswordError] = useState("")
+
+  const handleChange = (event:ChangeEvent<HTMLInputElement>)=>{
+    if(!event.target) return;
+    setSignUpCredentials({...signUpCredentials, [(event.target as HTMLInputElement).id]:(event.target as HTMLInputElement).value})
+    
+    if((event.target as HTMLInputElement).id === 'confirmpassword') {
+      if((event.target as HTMLInputElement).value==='') {
+        setPasswordError("")
+      } else if(signUpCredentials.password !== (event.target as HTMLInputElement).value) {
+        setPasswordError("passwords do not match.")
+        console.log('password: ', signUpCredentials.password, '\nconfirmpassword: ', (event.target as HTMLInputElement).value, 'passwords do not match.')
+      } else {
+        let errormsg = regex.test(signUpCredentials.password) ? '' : 'password must contain at least one upper case letter, one lower case letter,one number, and one special character and should be of minimum 8 characters.'
+        setPasswordError(errormsg)
+        console.log('regex test: ', errormsg)
+      }
+    }
+    else if((event.target as HTMLInputElement).id === 'password' && signUpCredentials.confirmpassword) {
+      if(signUpCredentials.confirmpassword !== (event.target as HTMLInputElement).value) {
+        setPasswordError("passwords do not match.")
+        console.log('password: ', (event.target as HTMLInputElement).value, '\nconfirmpassword: ', signUpCredentials.confirmpassword, 'passwords do not match.')
+      } else {
+        let errormsg = regex.test(signUpCredentials.confirmpassword) ? '' : 'password must contain at least one upper case letter, one lower case letter,one number, and one special character and should be of minimum 8 characters.'
+        setPasswordError(errormsg)
+        console.log('regex test: ', errormsg)
+      }
     }
   }
 
-  const handlePasswordHide = (op: number) => {
-    if (op === 1) {
-      let eyeicon = document.getElementById('eyeicon1')
-      let eyeClosed = document.getElementById('eye-closed1')
-      let password = document.getElementById('password')
-      eyeClosed?.classList.add('hidden')
-      eyeicon?.classList.remove('hidden')
-      password?.setAttribute('type', 'password')
-    } else if (op === 2) {
-      let eyeicon = document.getElementById('eyeicon2')
-      let eyeClosed = document.getElementById('eye-closed2')
-      let password = document.getElementById('confirm-password')
-      eyeClosed?.classList.add('hidden')
-      eyeicon?.classList.remove('hidden')
-      password?.setAttribute('type', 'password')
+  const handleClick = async()=>{
+    console.log(signUpCredentials)
+    let signUpInfo = { email:signUpCredentials['email'], password:signUpCredentials['password'] } 
+    let url = "http://localhost:5000/api/v1/auth/signup";
+    let config: any = {
+      method:'post',
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type':'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify(signUpInfo),
+    }
+
+    let response = await fetch(url,config);
+    response = await response.json();
+    console.log(response)
+    if(response.error) {
+      if(response.error === "User already exists") window.alert("User already exists with the given username/email id.");
+      else if(response.error === "Something went wrong") window.alert("Something went wrong on Server. Please try again.");
+    }
+
+    if(response.message){
+      window.alert("You have been Registered succesfully.");
     }
   }
 
-  const handleRegister = () => {
-    let formData = new FormData()
-    setWrongEmail(false)
-    setWrongPass(false)
-
-    // check if email is valid
-    let regEx = new RegExp(
-      //\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,5}\.[A-Za-z]{2,5}\b
-      //`\b[A-Za-z0-9._%+-]+@[A-Za-z0-9]{0, *}+\.[A-Za-z]{2,3}\.[A-Za-z]{0,3}\b`
-      `^([a-zA-Z0-9_.]+)@([a-zA-Z0-9_.]+)\.([a-zA-Z]{2,5})$`
-    )
-    let validEmail = regEx.test(email)
-    let emailSuffix = email.slice(email.indexOf('@'))
-    if (
-      !(
-        validEmail &&
-        emailSuffix &&
-        (emailSuffix === '@iiitb.ac.in' || emailSuffix === '@iiitb.org')
-      )
-    ) {
-      //check if email is valid
-      setWrongEmail(true)
-    }
-
-    if (!(password && confirmPassword && password === confirmPassword)) {
-      //check if passwords match
-      setWrongPass(true)
-    }
-
-    formData.append('email', email)
-    formData.append('password', password)
-    formData.append('confirmPassword', confirmPassword)
-
-    console.log('Submitted', validEmail, emailSuffix)
-  }
-
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [wrongEmail, setWrongEmail] = useState(false)
-  const [wrongPass, setWrongPass] = useState(false)
-
+  
   return (
-    <div
-      className={`register-screen w-screen h-fit flex justify-center items-center`}
-    >
-      <div className='mt-6 mb-6 register bg-white rounded-2xl flex-col flex items-center p-4 gap-16 pb-7'>
-        <Image src='/logo.png' alt='IIITB logo' width={300} height={282} />
-        <h1 className=' p-1 text-2xl font-extrabold w-full text-center mx-auto my-0'>
-          REGISTER NEW USER
-        </h1>
+    <div className={`signup-screen w-screen min-h-screen flex justify-center items-center`}>
+      <div className='joinustext text-black flex flex-col items-center'>
+        <h1 className='p-2 text-8xl font-semibold '>Join Us</h1>
+        <h2 className='p-2 text-4xl font-semibold'>at IIITB's Library Portal</h2>
+        <Link href='/login' className='mt-10 font-bold text-white btn rounded-xl p-4'>Already a Member? Login</Link>
+      </div>
+      <div className='signup rounded-2xl flex-col flex items-center p-4 gap-12 border-solid border-black border max-w-xl h-fit text-black'>
+          <Image src='/logo.png' alt='IIITB logo' className='iiitb-logo' width={300} height={282}/>
+          
+          {(passwordError) && <div className='errormsg border-solid border rounded-l p-3 mb-6'>
+            {passwordError}
+          </div>}
 
-        <div className='login_inputs flex-col flex items-center '>
-          <div className='mb-3 w-full'>
-            <label
-              htmlFor='emailid'
-              className='pl-1 pb-1 text-sm font-extrabold w-full'
-            >
-              EMAIL ID
-            </label>
-            <input
-              id='emailid'
-              type='email'
-              className='border-solid border-black border rounded-2xl w-full h-16 text-xl p-3 text-black mb-7'
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value)
-              }}
-            />
-            {wrongEmail && (
-              <p className='text-red-600 text-xs pl-1 error'>
-                {' '}
-                Invalid email id.{' '}
-              </p>
-            )}
+          <div className='signup_inputs flex-col flex items-center '>
+              {/* <h1 className=' p-1 text-xl font-semibold w-full m-0 p-0 mb-1'>Username</h1>
+              <input type="text" id='username' onChange={handleChange} className='w-full h-12 text-l text-black mb-5' />
+               */}
+              <h1 className=' p-1 text-xl font-semibold w-full'>Email</h1>
+              <input type="text" id='email' onChange={handleChange} className='w-full h-12 text-l text-black mb-5' />
+              
+              <div className='flex w-full p-1'>
+              <h1 className='text-xl font-semibold w-full'>Password</h1>
+              </div>
+              <div className='password-box signup_inputs flex items-center relative'>
+              <input type="password" id = "password" onChange={handleChange} className=' w-full h-12 text-l  text-black mb-5' />
+              <i className="fa-regular fa-eye absolute right-2 text-2xl h-3/5 text-justify cursor-pointer" onClick={(e) => handlePasswordShow('password')} id="eyeicon-password"></i>
+              <i className="fa-regular fa-eye-slash absolute right-2 text-2xl h-3/5 text-justify cursor-pointer hidden" onClick={(e) => handlePasswordHide('password')} id="eye-closed-password"></i>
+              </div>
+              <div className='flex w-full p-1'>
+              <h1 className='text-xl font-semibold w-full'>Confirm Password</h1>
+              </div>
+              <div className='password-box signup_inputs flex items-center relative'>
+              <input type="password" id = "confirmpassword" onChange={handleChange} className=' w-full h-12 text-l text-black mb-5' />
+              <i className="fa-regular fa-eye absolute right-2 text-2xl h-3/5 text-justify cursor-pointer" onClick={(e) => handlePasswordShow('confirmpassword')} id="eyeicon-confirmpassword"></i>
+              <i className="fa-regular fa-eye-slash absolute right-2 text-2xl h-3/5 text-justify cursor-pointer hidden" onClick={(e) => handlePasswordHide('confirmpassword')} id="eye-closed-confirmpassword"></i>
+              </div>
+              
+              <div className='flex justify-between w-full p-2'>
+                <div className='flex items-center justify-center '>
+                  <input type="checkbox" className='w-5 h-5' />
+                  <h1 className='text-black font-medium pl-2'>REMEMBER ME</h1>
+                </div>                 
+                <button className='signup-btn w-28 h-11 rounded-sm font-semibold text-white' onClick={handleClick} >SIGN UP</button> 
+              </div>
           </div>
-
-          <div className='mb-3 w-full'>
-            <div className='flex w-full p-1'>
-              <label
-                htmlFor='password'
-                className='text-sm font-extrabold w-full'
-              >
-                PASSWORD
-              </label>
-            </div>
-
-            <div className='password-box login_inputs flex items-center relative'>
-              <input
-                type='password'
-                className='border-solid border-black border rounded-2xl w-full h-16 text-xl p-3 text-black mb-6'
-                id='password'
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value)
-                }}
-              />
-              <i
-                className='fa-regular fa-eye absolute right-2 text-2xl h-3/5 text-justify cursor-pointer'
-                onClick={(e) => handlePasswordShow(1)}
-                id='eyeicon1'
-              ></i>
-              <i
-                className='fa-regular fa-eye-slash absolute right-2 text-2xl h-3/5 text-justify cursor-pointer hidden'
-                onClick={(e) => handlePasswordHide(1)}
-                id='eye-closed1'
-              ></i>
-            </div>
-            {wrongPass && (
-              <p className='text-red-600 text-xs pl-1 error'>
-                {' '}
-                the passwords don't match.{' '}
-              </p>
-            )}
-          </div>
-
-          <div className='mb-3 w-full'>
-            <div className='flex w-full p-1'>
-              <label
-                htmlFor='confirm-password'
-                className='text-sm font-extrabold w-full'
-              >
-                CONFIRM PASSWORD
-              </label>
-            </div>
-            <div className='password-box login_inputs flex items-center relative'>
-              <input
-                type='password'
-                className='border-solid border-black border rounded-2xl w-full h-16 text-xl p-3 text-black mb-6'
-                id='confirm-password'
-                value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value)
-                }}
-              />
-              <i
-                className='fa-regular fa-eye absolute right-2 text-2xl h-3/5 text-justify cursor-pointer'
-                onClick={(e) => handlePasswordShow(2)}
-                id='eyeicon2'
-              ></i>
-              <i
-                className='fa-regular fa-eye-slash absolute right-2 text-2xl h-3/5 text-justify cursor-pointer hidden'
-                onClick={(e) => handlePasswordHide(2)}
-                id='eye-closed2'
-              ></i>
-            </div>
-            {wrongPass && (
-              <p className='text-xs text-red-600 text-x pl-1 error'>
-                {' '}
-                the passwords don't match.{' '}
-              </p>
-            )}
-          </div>
-
-          <div className='min-w-full flex justify-start items-center flex-col w-full p-2'>
-            <button
-              className='btn w-4/6 flex items-center justify-center h-11 rounded-3xl font-bold text-white'
-              onClick={(e) => {
-                handleRegister()
-              }}
-            >
-              REGISTER USER
-            </button>
-            <Link
-              href='/'
-              className='m-6 text-blue-900 underline w-18 text-left text-sm font-medium hover:text-blue-800'
-            >
-              Go Back
-            </Link>
-          </div>
-        </div>
       </div>
     </div>
   )
