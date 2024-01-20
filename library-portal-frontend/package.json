@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nextui-org/react": "^2.2.9",
     "@tinymce/tinymce-react": "^4.3.2",
     "axios": "^1.6.2",
+    "framer-motion": "^10.16.16",
     "hamburger-react": "^2.5.0",
     "html-react-parser": "^5.0.6",
     "next": "13.5.6",
