@@ -1,58 +1,105 @@
-.navigationBar {
+#sticky-nav {
+  /* background-color: #025484; */
+  /* position: sticky; */
+  display: block;
+  top: 0;
+  z-index: 10;
+}
+
+#sticky-nav.fixed {
+  /*background-color: #025484; /* Adjust background color when fixed */
+  /* Adjust padding when fixed */
+}
+
+.navList {
+  overflow-y: hidden;
+  overflow-x: scroll;
   width: 100%;
-  padding: 20px;
-  background-color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin: 0 auto;
 }
 
-.header {
-  width: fit-content;
-  color: #004488;
-  font-weight: bolder;
-  font-size: 2rem;
-  flex: 1;
+.myTextShadow:hover {
+  text-shadow: 0px 0px 0px black;
+  font-size: 1.06rem;
+  letter-spacing: 0.05rem;
+  transition: 0.3s;
 }
 
-.menuIcon {
-  margin: 15px 10px;
-  flex: 0;
+.myTextShadow {
+  text-shadow: 0px 0px 0px black;
+  font-size: 1.05rem;
+  transition: 0.3s;
 }
 
-.userProfile {
-  margin: 15px 0;
-  margin-right: 10px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  min-width: 10%;
-  flex: 0;
+/* .scrollbarClass::-webkit-scrollbar {
+  width: 44px;
 }
 
-.profilePic {
-  border-radius: 50px;
-  width: 35px;
-  overflow: hidden;
+.scrollbarClass::-webkit-scrollbar-thumb {
+  background-color: #0174b6db; 
 }
 
-.dropdown-hidden {
-  height: fit-content;
-  transform: scale(0);
-  display: none;
-  transition: 0.3s max-height 100%;
-  background-color: white;
+.scrollbarClass::-webkit-scrollbar-track {
+  background-color: #cccccc67;
+} */
+
+/* Chrome, Edge, and Safari */
+/* .scrollbarClass::-webkit-scrollbar {
+  width: 1px;
 }
 
-.dropdown-show {
-  height: fit-content;
-  transform: scale(1);
-  display: inline-block;
-  background-color: white;
+.scrollbarClass::-webkit-scrollbar-track {
+  background: #0174b6db;
+  border-radius: 5px;
 }
 
-ul li {
-  width: 100%;
-  padding: 5px 4px;
-  border-bottom: 1px solid #004488;
+.scrollbarClass::-webkit-scrollbar-thumb {
+  background-color: #0174b6db;
+  border-radius: 5px;
+  border: 3px solid #0174b6db;
+}
+
+.scrollbarClass::-webkit-scrollbar-thumb:hover {
+  background-color: #0174b6db;
+} */
+
+/* For WebKit Browsers (Chrome, Safari, Brave) */
+.navList::-webkit-scrollbar {
+  width: 1px; /* Adjust the width of the scrollbar */
+  height: 5px;
+  margin: 0;
+  padding: 0;
+}
+
+.navList::-webkit-scrollbar-track {
+  width: 1px;
+  height: 4px;
+  background-color: rgb(24, 40, 90); /* Track color */
+  border-radius: 10px;
+}
+
+.navList::-webkit-scrollbar-thumb {
+  width: 1px;
+  background-color: rgb(29, 49, 109); /* Thumb color */
+  border-radius: 10px; /* Rounded corners for the thumb */
+  border-bottom: 2px solid transparent;
+}
+
+/* For Internet Explorer */
+.navList {
+  scrollbar-width: thin; /* Width of the scrollbar */
+  scroll-margin: 1px;
+  scroll-padding: 2px;
+  scrollbar-width: 1px;
+}
+
+.navList::-ms-scrollbar-track {
+  width: 1px;
+  background-color: #f1f1f1; /* Track color */
+}
+
+.navList::-ms-scrollbar-thumb {
+  width: 1px;
+  background-color: #888; /* Thumb color */
+  border-radius: 2px; /* Rounded corners for the thumb */
 }

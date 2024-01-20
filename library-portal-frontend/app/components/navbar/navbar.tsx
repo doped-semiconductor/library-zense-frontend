@@ -1,96 +1,115 @@
 'use client'
-import '../navbar/navbar.css'
-import React, { useState } from 'react'
-import Hamburger from 'hamburger-react'
-import { RiArrowDropDownLine } from 'react-icons/ri'
+import { useEffect } from 'react'
+import "./navbar.css"
+import { GetNavInfoResponse, NavInfo, SectionType } from '@/app/types/api'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+const NavBar = () => {
+  let navBarInfoList: NavInfo[] = [];
 
-const Navbar = (props: any) => {
-  const [showDropdown, setShowDropdown] = useState(false)
-
-  const toggleDropdown = () => {
-    setShowDropdown(!showDropdown)
+  function toggleDropDown(dropdownMenuID: string): void {
+    const dropdownMenu: HTMLDivElement = document.getElementById(`${dropdownMenuID}`) as HTMLDivElement
+    let classList = dropdownMenu?.classList
+    if(classList?.contains("dropdown-show")) {
+      dropdownMenu?.classList.remove("dropdown-show")
+      dropdownMenu?.classList.add("dropdown-hide")
+    } else {
+      dropdownMenu?.classList.remove("dropdown-hide")
+      dropdownMenu?.classList.add("dropdown-show")
+    }
   }
 
+  function handleNavClick(Node: NavInfo, new_url_path: string) {
+    const router = useRouter()
+    router.push(new_url_path, {
+      query: {
+        section_id: Node.id
+      }
+    })
+  }
+  useEffect(()=>{
+    const getNavInfo = async () => {
+      const url = `http://localhost:5000/api/content/app/get-nav-info/`
+      const config: RequestInit = {
+        method: 'get',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include' as RequestCredentials
+      }
+      const result = await fetch(url, config)
+      const status = result.status
+     
+      let navInfoList: NavInfo[];
+      if(result.status===401) {
+        const response: GetNavInfoResponse = await result.json() as GetNavInfoResponse
+        console.error("Server responded with:", response.message)
+        navInfoList = []
+      } else if(result.status===200) {
+        const response: GetNavInfoResponse = await result.json() as GetNavInfoResponse
+        navInfoList = (response.payload)? response.payload : []
+      } else {
+        console.error("Client: Something went wrong at the server.") 
+        navInfoList = []
+      }
+
+      return navInfoList;
+    }
+
+     getNavInfo().then((response: NavInfo[]) => {
+      navBarInfoList = response
+      return
+    }).catch((error) => {
+      navBarInfoList = []
+      console.error(error)
+      return
+    })
+  },[])
+
   return (
-    <>
-      <h1
-        className='absolute top-7 sm:top-7 w-full min-h-fit text-xl font-extrabold text-center sm:text-2xl md:text-4x z-40'
-        style={{ color: '#004488' }}
-      >
-        {' '}
-        IIIT BANGALORE LIBRARY
-      </h1>
-
-      <nav
-        className={
-          'flex justify-between items-center w-full min-h-fit pt-4 pb-4 sm:pt-5 sm:pb-2 pl-1 pr-1 sm:pl-2 sm:pr-2 bg-white z-40 drop-shadow-xl'
-        }
-      >
-        <div
-          className={
-            'flex-shrink-0 flex-grow-0 scale-75 sm:scale-95 md:scale-110 '
-          }
-        >
-          <Hamburger size={17} color='black' />
-        </div>
-
-        <div className='flex justify-around items-center min-w-fit z-40'>
-          <p
-            className='hidden font-bold md:visible md:inline-block md:mr-3 z-40'
-            style={{ color: '#004488' }}
-          >
-            {' '}
-            Zense User{' '}
-          </p>{' '}
-          {/* user name*/}
-          <span className='w-8 h-8 p-1 rounded-full drop-shadow-xl scale-75 sm:scale-90 md:scale-100 z-40 bg-black'>
-            <img
-              src='../../profile_final.svg'
-              alt='profile-pic'
-              className='profilePic'
-            />
-          </span>
-          <div
-            onClick={(e) => {
-              console.log(showDropdown)
-              toggleDropdown()
-            }}
-            className='z-50 hover:cursor-pointer'
-          >
-            <svg
-              width='30px'
-              height='30px'
-              viewBox='0 0 24 24'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect x='0' fill='none' width='24' height='24' />
-
-              <g>
-                <path d='M7 10l5 5 5-5' />
-              </g>
-            </svg>
-          </div>
-        </div>
-      </nav>
-      <ul
-        className={
-          showDropdown
-            ? 'dropdown-show text-transparent bg-transparent absolute right-4 top-18 hover:cursor-pointer z-50 outline-none'
-            : 'dropdown-hidden text-transparent bg-transparent absolute right-4 top-18 hover:cursor-pointer z-50 outline-none'
-        }
-      >
-        <li className='border-1 border-black text-black font-serif font-medium pt-3 pb-3 pl-2 pr-2 hover:text-gray-600'>
-          {' '}
-          <Link href='/profile'>Edit profile </Link>
-        </li>
-        <li className='border-1 border-black text-black font-serif font-medium pt-3 pb-3 pl-2 pr-2 hover:text-gray-600'>
-          {' '}
-          <Link href='/profile'>logout</Link>{' '}
-        </li>
+    <nav
+      id='sticky-nav'
+      className='p-24 pt-0 pb-0 min-h-fit min-w-full w-full bg-blue-950'
+    >
+      {/* nav-content goes here*/}
+      <ul className='flex justify-start'>
+        <Link key={'Home'} href='/' className='text-white font-semibold font-sans p-5 text-lg hover:bg-blue-900 hover:cursor-pointer'> Home </Link>
+        <Link key={'Login'} href='/login' className='text-white font-semibold font-sans p-5 text-lg hover:bg-blue-900 hover:cursor-pointer'> Login </Link>
+        <Link key={'Register'} href='/register' className='text-white font-semibold font-sans p-5 text-lg hover:bg-blue-900 hover:cursor-pointer'> Register </Link>
       </ul>
-    </>
+    </nav>
   )
 }
 
-export default Navbar
+export default NavBar
+
+
+// {
+//           navBarInfoList.map((node, index) => {
+//             if(node.type===SectionType.Page){
+//               return (
+//                 <h3 key={node.key} onClick={(e)=>{e.preventDefault(); handleNavClick(node, `/pages/${node.url_segment}`)}} className='text-white font-semibold font-sans p-5 text-lg hover:bg-blue-900 hover:cursor-pointer'> {node.label} </h3>
+//               )
+//             } else if(node.type===SectionType.External) {
+//               return (
+//                 <Link key={node.key} href={node.ext_url? node.ext_url : '/error/notfound'} className='text-white font-semibold font-sans p-5 text-lg hover:bg-blue-900 hover:cursor-pointer'> {node.label} </Link>
+//               )
+//             } else if(node.type===SectionType.ParentSection){
+//               return (
+//                 <div key={node.key} className='text-white relative font-semibold font-sans p-5 text-lg hover:bg-blue-900 hover:cursor-pointer' onClick={()=> toggleDropDown(("dropdown" + node.key))}>
+//                   <span className='p-0 m-0'> {node.label} </span>
+//                   <div id={`dropdown${node.key}`} className='dropdown-hidden absolute top-[4.5rem] -left-[17.5%] pb-5 w-[135%] px-1 drop-shadow-xl border-gray-400 border-t-0 rounded z-50'>
+//                       {
+//                         node.children?.map((childNode, index)=> {
+//                           return (
+//                           <span onClick={(e) => {handleNavClick(childNode, `/pages/${node.url_segment}/${childNode.url_segment}`)}} className='text-gray-800 w-full block px-4 mt-1 pt-2 pb-1 text-base border-b-1 border-gray-200 hover:border-orange-600 hover:bg-slate-200 font-normal myTextShadow'> {childNode.label} </span>
+//                           )
+//                         })
+//                       }
+//                   </div>
+//                 </div>
+//               )
+//             }
+//           })
+//         }
