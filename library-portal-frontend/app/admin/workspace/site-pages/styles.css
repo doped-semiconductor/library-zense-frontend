@@ -1,0 +1,39 @@
+.scrollBar::-webkit-scrollbar {
+  width: 1px; /* Adjust the width of the scrollbar */
+  height: 5px;
+  margin: 0;
+  padding: 0;
+}
+
+.scrollBar::-webkit-scrollbar-track {
+  width: 1px;
+  height: 4px;
+  background-color: rgb(24, 40, 90); /* Track color */
+  border-radius: 10px;
+}
+
+.scrollBar::-webkit-scrollbar-thumb {
+  width: 1px;
+  background-color: rgb(29, 49, 109); /* Thumb color */
+  border-radius: 10px; /* Rounded corners for the thumb */
+  border-bottom: 2px solid transparent;
+}
+
+/* For Internet Explorer */
+.scrollBar {
+  scrollbar-width: thin; /* Width of the scrollbar */
+  scroll-margin: 1px;
+  scroll-padding: 2px;
+  scrollbar-width: 1px;
+}
+
+.scrollBar::-ms-scrollbar-track {
+  width: 1px;
+  background-color: #f1f1f1; /* Track color */
+}
+
+.scrollBar::-ms-scrollbar-thumb {
+  width: 1px;
+  background-color: #888; /* Thumb color */
+  border-radius: 2px; /* Rounded corners for the thumb */
+}
