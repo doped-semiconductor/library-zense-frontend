@@ -1,7 +1,7 @@
 'use client'
 import Header from "@/app/components/header/header"
 import NavBar from "@/app/components/navbar/navbar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import parse from "html-react-parser"
 
 export default function contentPage({
@@ -9,15 +9,14 @@ export default function contentPage({
 }: {
   params: {
     slug: string[],
-    query: {
-      section_id: string
-    }
   }
 }) {
   const [content, setContent] = useState('')
-  const id: string = params.query.section_id
+  console.log(params.slug);
+
+
   const getHTMLPage = async () => {
-    const url = `http://localhost:5000/api/content/section/${id}/htmlContent`
+    const url = `http://localhost:5000/api/content/section/${params.slug[0]}/htmlContent`
     const config:RequestInit = {
       method: 'get',
       headers: {
@@ -37,11 +36,16 @@ export default function contentPage({
     }
   }
 
+  useEffect(() => {
+    getHTMLPage();
+  }, [])
+  
+
   if(params.slug.length===0){
     return(
       <>
         <Header></Header>
-        <NavBar></NavBar>
+        {/* <NavBar></NavBar> */}
       
         <div className=' bg-gray-300 text-black w-screen h-screen text-xl font-medium pt-20'>
           <span className='text-6xl block font-bold w-fit m-auto mt-0 mb-0'>404 </span> 
@@ -57,8 +61,8 @@ export default function contentPage({
     return (
      <>
         <Header></Header>
-        <NavBar></NavBar>
-        <main className='min-h-screen p-20 pt-10 bg-gray-300'>
+        {/* <NavBar></NavBar> */}
+        <main className='min-h-screen p-20 pt-10 bg-gray-300 text-black'>
           <div className='page-content m-auto mt-3 w-full bg-white p-16 pt-16 text-justify'>
               {parse(content)}
           </div>
@@ -68,8 +72,8 @@ export default function contentPage({
   } else if(params.slug.length===2) {
     return (
      <>
-        <Header></Header>
-        <NavBar></NavBar>
+        {/* <Header></Header>
+        <NavBar></NavBar> */}
         <main className='min-h-screen p-20 pt-10 bg-gray-300'>
           <div className='page-content m-auto mt-3 w-full bg-white p-16 pt-16 text-justify'>
               {parse(content)}

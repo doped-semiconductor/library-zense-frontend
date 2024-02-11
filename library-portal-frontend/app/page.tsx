@@ -25,7 +25,7 @@ export default function Home() {
       }
       let result = await fetch(url, config)
       let response: any = await result.json() 
-      console.log(response.payload) 
+      // console.log(response.payload) 
       setNavinfo(response.payload);
     }
 

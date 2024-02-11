@@ -7,8 +7,12 @@ import { useRouter } from 'next/router'
 const NavBar = (params:{
   navBarInfoList: any
 }) => {
-  let navBarInfoList: NavInfo[] = params.navBarInfoList as NavInfo[];
 
+  
+  let navBarInfoList: NavInfo[] = params.navBarInfoList as NavInfo[];
+  
+  if(!params.navBarInfoList) navBarInfoList=[];
+  
   function toggleDropDown(dropdownMenuID: string): void {
     const dropdownMenu: HTMLDivElement = document.getElementById(`${dropdownMenuID}`) as HTMLDivElement
     let classList = dropdownMenu?.classList
@@ -44,7 +48,9 @@ const NavBar = (params:{
           navBarInfoList.map((node, index) => {
             if(node.section_type===SectionType.Page){
               return (
-                <h3 key={node.section_name} onClick={(e)=>{e.preventDefault(); handleNavClick(node, `/pages/${node.section_name}`)}} className='text-white font-semibold font-sans p-5 text-lg hover:bg-blue-900 hover:cursor-pointer'> {node.section_name} </h3>
+                <Link key={node.section_name} href= {`/pages/${node.section_name}`}
+                //  onClick={(e)=>{e.preventDefault(); handleNavClick(node, `/pages/${node.section_name}`)}} 
+                 className='text-white font-semibold font-sans p-5 text-lg hover:bg-blue-900 hover:cursor-pointer'> {node.section_name} </Link>
               )
             } else if(node.section_type===SectionType.External) {
               return (
