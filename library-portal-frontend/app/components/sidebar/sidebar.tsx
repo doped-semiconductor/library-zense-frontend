@@ -33,7 +33,7 @@ export default function SideBar() {
   // onMouseEnter={(e)=> {onNavMouseEnter("dashboard")}} onMouseLeave={(e)=>{onNavMouseLeave("dashboard")}}
 
   return (
-    <div className='p-0 m-0'>
+    <div className='p-0 m-0 text-black'>
       <div
         id='sidebar'
         className='sidebar sticky z-50 min-w-fit p-0 py-0 w-fit min-h-screen h-full bg-white drop-shadow-lg border-r-1 border-r-gray-200'

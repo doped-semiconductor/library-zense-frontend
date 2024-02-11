@@ -47,7 +47,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className='bg-transparent w-full h-full'>
+    <div className='bg-transparent w-full h-full text-black'>
       <h1 className='hero-title w-fit pl-11 pt-5 text-4xl font-bold drop-shadow-md font-sans'>
         {' '}
         Welcome To Admin Dashboard{' '}

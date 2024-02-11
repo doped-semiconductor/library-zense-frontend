@@ -52,10 +52,9 @@ export interface Section {
 
 export interface NavInfo {
   id: string
-  label: string
-  key: string
-  url_segment: string
-  type: SectionType
+  section_name: string
+  // url_segment: string
+  section_type: SectionType
   ext_url: string | null
   children: NavInfo[] | null
 }

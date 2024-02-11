@@ -182,7 +182,7 @@ export default function AdminCreatepagePage() {
   }
 
   return (
-    <div className='bg-transparent w-full h-full'>
+    <div className='bg-transparent w-full h-full text-black'>
       <div
         id='actions-div'
         className='min-h-[35px] w-[95%] mx-auto px-5 py-3 my-3 rounded-lg bg-white flex justify-stretch items-center'

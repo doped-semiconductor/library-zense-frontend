@@ -61,7 +61,7 @@ export default function AdminPages() {
   useEffect(() => {}, [])
 
   return (
-    <div className='pl-7 bg-transparent w-full h-full'>
+    <div className='pl-7 bg-transparent w-full h-full text-black'>
       <div className='pb-8'>
         <div className='w-full h-fit flex items-center justify-between'>
           <div>

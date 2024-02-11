@@ -64,7 +64,7 @@ export default function AdminMediaPage() {
   useEffect(() => {}, [])
 
   return (
-    <div className=''>
+    <div className='text-black'>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='w-[70%]'>
         <ModalContent>
           {(onClose) => (
