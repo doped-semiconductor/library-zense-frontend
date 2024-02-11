@@ -3,3 +3,18 @@
   /* border: 1px solid black; */
   display: block;
 }
+
+.tickmark {
+  grid-row-start: 4;
+  grid-row-end: 5;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  max-width: 60%;
+}
+
+.descriptionDiv {
+  grid-row-start: 2;
+  grid-row-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}

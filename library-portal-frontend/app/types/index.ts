@@ -1,7 +1,6 @@
 import {
   LoginResponse,
   LogoutResponse,
-  SignoutResponse,
   GetUserResponse,
   SignUpResponse,
   RegisterResponse,
@@ -11,7 +10,6 @@ import {
 export type {
   LoginResponse,
   LogoutResponse,
-  SignoutResponse,
   GetUserResponse,
   SignUpResponse,
   RegisterResponse,

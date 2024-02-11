@@ -6,7 +6,11 @@ import axios, { Axios, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 import './styles.css'
 import { Button } from '@nextui-org/react'
-import { SectionType, StandardResponse } from '@/app/types/api'
+import {
+  CreatePageRequestBody,
+  SectionType,
+  StandardResponse,
+} from '@/app/types/api'
 
 export default function AdminCreatepagePage() {
   // stores state (content) of the Editor
@@ -19,6 +23,7 @@ export default function AdminCreatepagePage() {
   const [externalURL, setExternalURL] = useState('')
   const [sectionType, setSectionType] = useState(SectionType.Page)
   const [parentSection, setParentSection] = useState('')
+  const [description, setDescription] = useState('')
   const [visibility, setVisibility] = useState(false)
   const [ifFormError, setIfFormError] = useState(false)
 
@@ -63,29 +68,31 @@ export default function AdminCreatepagePage() {
   const onPublish = async () => {
     //formValidation()
 
-    const data = {
+    const data: CreatePageRequestBody = {
       sectionName: sectionName,
       section_type: sectionType,
-      ext_url: '',
-      htmlContent: '',
-      parentSectionID: '',
+      description: description,
+      ext_url: null,
+      htmlContent: null,
+      parentSectionID: null,
       visibility: visibility,
     }
 
-    if (SectionType.External === 'external') {
-      data['ext_url'] === externalURL
-      data['htmlContent'] === null
-      data['parentSectionID'] === parentSection
-    } else if (SectionType.Page === 'page') {
-      data['ext_url'] === null
-      data['htmlContent'] === value
-      data['parentSectionID'] === parentSection
-    } else if (SectionType.ParentSection === 'parentsection') {
-      data['ext_url'] === null
-      data['htmlContent'] === null
-      data['parentSectionID'] === null
+    if (SectionType.External === sectionType) {
+      data['ext_url'] = externalURL
+      data['htmlContent'] = null
+      data['parentSectionID'] = parentSection
+    } else if (SectionType.Page === sectionType) {
+      data['ext_url'] = null
+      data['htmlContent'] = value
+      data['parentSectionID'] = parentSection
+    } else if (SectionType.ParentSection === sectionType) {
+      data['ext_url'] = null
+      data['htmlContent'] = null
+      data['parentSectionID'] = null
     }
 
+    console.log('data:', data)
     const config: AxiosRequestConfig = {
       method: 'post',
       headers: {
@@ -94,30 +101,35 @@ export default function AdminCreatepagePage() {
       },
     }
 
-    let response: Response = await fetch(
-      'http://localhost:5000/api/content/new-section',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-        credentials: 'include', // Include credentials (cookies) in the request
-      }
-    )
+    try {
+      // let response: Response = await fetch(
+      //   'http://localhost:5000/api/content/new-section/',
+      //   {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify(data),
+      //     credentials: 'include', // Include credentials (cookies) in the request
+      //   }
+      // )
 
-    // axios.post(
-    //       'http://localhost:5000/api/content/new-section/',
-    //       data,
-    //       {
-    //         withCredentials: true,
-    //       }
-    //     )
-
-    if (response.status === 200) {
-      window.alert(
-        `page created succesfully ${(response as StandardResponse).payload}`
+      let result: AxiosResponse = await axios.post(
+        'http://localhost:5000/api/content/new-section/',
+        data,
+        {
+          withCredentials: true,
+        }
       )
+
+      if (result.status === 200) {
+        let response: StandardResponse = result.data
+        window.alert(
+          `page created succesfully. Section Name ${response.payload}`
+        )
+      }
+    } catch (error) {
+      window.alert('Something went wrong. Try again.')
     }
   }
 
@@ -136,7 +148,7 @@ export default function AdminCreatepagePage() {
     },
     {
       name: 'none',
-      sectionId: null,
+      sectionid: 'null',
     },
   ]
 
@@ -185,7 +197,13 @@ export default function AdminCreatepagePage() {
 
       <div id='main-div' className='w-full p-2 h-fit'>
         <div className='min-w-full min-h-full w-full container'>
-          <div className='min-h-screen h-screen min-w-full'>
+          <div
+            className={
+              sectionType !== SectionType.Page
+                ? 'min-h-screen h-full max-h-full min-w-full hover:cursor-not-allowed opacity-70'
+                : 'min-h-screen h-full max-h-full min-w-full'
+            }
+          >
             <Editor
               apiKey='8qaolh6gudre3h70mzloumvlk6maazqyfko3xhrgw64petzg'
               onEditorChange={(newValue, editor) => {
@@ -194,6 +212,7 @@ export default function AdminCreatepagePage() {
                 // console.log('VALUE ==> ', value)
                 // console.log('TEXT ==> ', text)
               }}
+              disabled={sectionType !== SectionType.Page}
               onInit={(evt, editor) => {
                 setText(editor.getContent({ format: 'text' }))
               }}
@@ -275,7 +294,7 @@ export default function AdminCreatepagePage() {
           </div>
         </div>
 
-        <div className='min-h-screen px-1 py-4 h-screen border-1 border-gray-300 rounded-lg bg-white'>
+        <div className='min-h-screen px-1 py-4 h-fit border-1 border-gray-300 rounded-lg bg-white max-h-fit'>
           <div className='w-full h-fit border-b-1 pt-2 border-gray-200 pb-5'>
             <Button
               className='text-white text-base bg-blue-600 m-auto w-fit block'
@@ -384,7 +403,14 @@ export default function AdminCreatepagePage() {
                 placeholder='null'
                 value={parentSection}
                 onChange={(e) => {
-                  setParentSection(e.target.value)
+                  let id!: string
+                  for (let section of sectionsList) {
+                    if (section.name === e.target.value) {
+                      id = section.sectionid
+                    }
+                  }
+
+                  setParentSection(id)
                 }}
               >
                 {sectionsList.map((section, index) => {
@@ -393,6 +419,26 @@ export default function AdminCreatepagePage() {
                   )
                 })}
               </select>
+            </span>
+
+            <span className='w-full block px-1 pb-2'>
+              <label
+                htmlFor='description'
+                className='block pl-2  pb-1 font-semibold'
+              >
+                Description:
+              </label>
+
+              <textarea
+                id='description'
+                placeholder='page description'
+                rows={5}
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value)
+                }}
+                className='block ml-3 px-2 py-[0.15rem] border-2 text-base border-gray-400 rounded disabled:opacity-60 disabled:border-gray-200 disabled:cursor-not-allowed w-11/12'
+              ></textarea>
             </span>
 
             <span className='w-full block px-2 pb-2'>

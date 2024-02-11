@@ -1,0 +1,40 @@
+.trashTooltip span {
+  color: #4646f6;
+}
+
+.trashTooltip:hover span {
+  color: red;
+}
+
+.tooltip-reload:hover::after {
+  content: 'reload';
+  width: fit-content;
+  height: fit-content;
+  top: 0;
+  left: 100;
+  padding: 5px 3px;
+  font-size: 1.25rem;
+  background-color: red;
+  z-index: 50;
+  color: black;
+  text-transform: capitalize;
+}
+
+.rotate {
+  display: inline-block;
+
+  animation: rotation 1s infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

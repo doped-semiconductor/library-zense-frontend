@@ -37,3 +37,17 @@
   background-color: #888; /* Thumb color */
   border-radius: 2px; /* Rounded corners for the thumb */
 }
+
+.DescriptionDiv {
+  grid-row-start: 2;
+  grid-row-end: 5;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+.update-btn {
+  grid-row-start: 5;
+  grid-row-end: 6;
+  grid-column-start: 2;
+  grid-column-end: 4;
+}

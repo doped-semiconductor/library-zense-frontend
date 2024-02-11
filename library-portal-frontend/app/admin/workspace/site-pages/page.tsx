@@ -1,26 +1,26 @@
 'use client'
-import { RxDashboard } from 'react-icons/rx'
-import { FaSitemap } from 'react-icons/fa'
-import { LiaSitemapSolid } from 'react-icons/lia'
-import { MdOutlinePermMedia } from 'react-icons/md'
-import { useEffect } from 'react'
-import { MdOutlineAddToPhotos } from 'react-icons/md'
-import { FaRegFile, FaRegFileVideo, FaRegImage } from 'react-icons/fa6'
-import { RiFileEditFill, RiFileEditLine } from 'react-icons/ri'
-import { AiOutlineFileAdd } from 'react-icons/ai'
-import { CgFileRemove } from 'react-icons/cg'
+import { FaFile, FaPlus } from 'react-icons/fa'
+import { useEffect, useState } from 'react'
+import { FaRegImage } from 'react-icons/fa6'
+import { HiExternalLink, HiOutlineLink } from 'react-icons/hi'
+import { TbFolder } from 'react-icons/tb'
 
 import './styles.css'
 import { useRouter } from 'next/navigation'
-import TableItem from '@/app/components/table/page'
+import { Button } from '@nextui-org/react'
+import SectionsTable from '@/app/components/tables/sections/page'
+import { Section, SectionType } from '@/app/types/api'
+import { RiPagesLine } from 'react-icons/ri'
+import { TiTick } from 'react-icons/ti'
+import TableItem from '@/app/components/tables/media/page'
+import ViewEditBox from '@/app/components/viewEditInfoBox/sections/page'
+import { randomUUID } from 'crypto'
 
 export default function AdminPages() {
-  let iconSize = 80
-  const iconColor = 'black'
-
   const router = useRouter()
-  const handleActionClick = (pageName: string) => {
-    switch (pageName) {
+
+  const directTo = (arg: string) => {
+    switch (arg) {
       case 'create-page': {
         router.push('/admin/workspace/create-page')
         return
@@ -47,17 +47,116 @@ export default function AdminPages() {
     }
   }
 
+  const [selectedRow, setSelectedRow] = useState({})
+
+  const [displayedRow, setDisplayedRow] = useState({})
+
+  const [mediaList, setMediaList] = useState([])
+
+  useEffect(() => {
+    console.log(selectedRow)
+    setDisplayedRow({ ...selectedRow })
+  }, [selectedRow])
+
+  useEffect(() => {}, [])
+
   return (
     <div className='pl-7 bg-transparent w-full h-full'>
       <div className='pb-8'>
-        <h1 className='text-4xl font-bold p-4 py-0 mt-6'> Page Actions </h1>
+        <div className='w-full h-fit flex items-center justify-between'>
+          <div>
+            <h1 className='text-4xl font-bold p-4 py-0 mt-3'>
+              {' '}
+              Sections Page{' '}
+            </h1>
+            <p className='text-xl font-normal font-sans p-4 py-0 pt-4'>
+              {' '}
+              view, delete, or change filename & description of Sections.{' '}
+            </p>
+          </div>
+          <div className='min-w-fit flex items-center justify-start pb-0 pr-36'>
+            <Button
+              className='text-white text-base bg-blue-600 w-fit flex pr-[10%]'
+              onPress={(e) => {
+                directTo('create-page')
+              }}
+            >
+              <FaPlus size={24}></FaPlus> New Section
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className='pt-0'>
+        <ViewEditBox
+          directTo={directTo}
+          displayedRow={displayedRow}
+          selectedRow={selectedRow}
+          setDisplayedRow={setDisplayedRow}
+          key={'sectionsViewEditBox'}
+        ></ViewEditBox>
+        <div className='scrollBar overflow-y-hidden overflow-x-scroll h-fit mt-8 mb-28 mx-auto py-3 w-[85%]'>
+          <SectionsTable
+            selectedRow={selectedRow}
+            setSelectedRow={setSelectedRow}
+            mediaList={[]}
+            key={'sectionsTable'}
+          ></SectionsTable>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* COMMENTED OUT CODE (JUST FOR BOOKKEEPING PURPOSES) */
+
+//   {
+/* <hr className='bg-gray-600 mx-3 mt-5 mb-5 w-[97%] h-[2px]'></hr> */
+//   }
+
+//{
+/* <h1 className='text-4xl font-bold p-4 py-0 mt-6'> Page Actions </h1>
         <p className='text-xl font-normal font-sans p-4 py-0'>
           {' '}
           shortcuts to create, edit, and delete pages{' '}
-        </p>
+        </p> */
+//}
 
-        {/* flex flex-row justify-start flex-wrap items-center */}
-        <div className='w-full h-full p-4 mt-3 flex flex-row justify-start flex-wrap items-start gap-6'>
+// let iconSize = 80
+// const iconColor = 'black'
+// const handleActionClick = (pageName: string) => {
+//   switch (pageName) {
+//     case 'create-page': {
+//       router.push('/admin/workspace/create-page')
+//       return
+//     }
+
+//     case 'edit-page': {
+//       router.push('/admin/workspace/edit-page')
+//       return
+//     }
+
+//     case 'delete-page': {
+//       window.scrollBy({
+//         top: window.innerHeight,
+//         left: 0,
+//         behavior: 'smooth',
+//       })
+//       return
+//     }
+
+//     default: {
+//       return
+//       // do nothing
+//     }
+//   }
+// }
+//
+// {
+//   /* flex flex-row justify-start flex-wrap items-center */
+// }
+// {
+/* <div className='w-full h-full p-4 mt-3 flex flex-row justify-start flex-wrap items-start gap-6'>
           <div
             className='w-300px h-450px px-8 py-2 drop-shadow-md rounded border-1 border-gray-200 bg-slate-100 transition-all hover:cursor-pointer hover:-translate-x-1 hover:-translate-y-1 hover:drop-shadow-lg hover:transition-all cards'
             onClick={(e) => {
@@ -120,118 +219,5 @@ export default function AdminPages() {
               database. Choose the page and press delete icon.
             </p>
           </div>
-        </div>
-      </div>
-
-      <hr className='bg-gray-600 mx-3 mt-5 mb-5 w-[97%] h-[2px]'></hr>
-
-      <div className='pt-0'>
-        <h1 className='text-3xl font-bold p-4 py-0 mt-3'> List of Pages </h1>
-        <p className='text-lg font-normal font-sans p-4 py-0'>
-          {' '}
-          view, delete, or change filename & description of pages in this
-          section.{' '}
-        </p>
-
-        <div className='mx-auto mt-5 mb-3 pl-7 pt-5 pb-5 w-[80%] h-fit grid grid-flow-row grid-cols-3 gap-x-0 gap-y-5 rounded-lg drop-shadow-md border-1 border-gray-400 bg-slate-100'>
-          <div className='flex items-center'>
-            <span className='inline-block'>
-              <FaRegImage size={34} color='green'>
-                {' '}
-              </FaRegImage>
-            </span>
-            <p className='text-3xl inline-block w-fit h-fit pl-2'> / Image </p>
-          </div>
-          <div className=''>
-            <label
-              htmlFor='pagename'
-              className='text-base font-semibold pb-1 block'
-            >
-              {' '}
-              Filename:{' '}
-            </label>
-            <input
-              id='pagename'
-              type='text'
-              value=''
-              placeholder='page name'
-              className='text-base py-1 px-2 font-medium rounded border-gray-500'
-            />
-          </div>
-          <div className=''>
-            <label
-              htmlFor='size'
-              className='text-base font-semibold pb-1 block'
-            >
-              {' '}
-              Size:{' '}
-            </label>
-            <input
-              disabled
-              id='size'
-              type='text'
-              value=''
-              placeholder='page size'
-              className='text-base py-1 px-2 font-medium rounded border-gray-500 bg-white'
-            />
-          </div>
-          <div className=''>
-            <label
-              htmlFor='description'
-              className='text-base font-semibold pb-1 block'
-            >
-              {' '}
-              Description:{' '}
-            </label>
-            <input
-              disabled
-              id='description'
-              type='text'
-              value=''
-              placeholder='description'
-              className='text-base py-1 px-2 font-medium rounded border-gray-500 bg-white'
-            />
-          </div>
-          <div className=''>
-            <label
-              htmlFor='lastmodified'
-              className='text-base font-semibold pb-1 block'
-            >
-              {' '}
-              Last Modified:{' '}
-            </label>
-            <input
-              disabled
-              id='lastmodified'
-              type='text'
-              value=''
-              placeholder='description'
-              className='text-base py-1 px-2 font-medium rounded border-gray-500 bg-white'
-            />
-          </div>
-          <div className=''>
-            <label
-              htmlFor='createdby'
-              className='text-base font-semibold pb-1 block'
-            >
-              {' '}
-              Created by:{' '}
-            </label>
-            <input
-              disabled
-              id='createdby'
-              type='text'
-              value=''
-              placeholder='description'
-              className='text-base py-1 px-2 font-medium rounded border-gray-500 bg-white hover:cursor-not-allowed'
-            />
-          </div>
-        </div>
-
-        <div className='scrollBar overflow-y-scroll overflow-x-scroll max-h-[400px] mt-3 mb-28 mx-auto py-3 w-[85%]'>
-          <TableItem></TableItem>
-        </div>
-      </div>
-    </div>
-  )
-}
+        </div> */
+// }
